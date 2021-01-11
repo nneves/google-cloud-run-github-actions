@@ -30,8 +30,8 @@ jobs:
         GCP_APPLICATION: ${{ secrets.GCP_APPLICATION }}
       run: |
         echo "GCP_PROJECT_ID=$GCP_PROJECT_ID"
-        gcloud config set project $GCP_PROJECT_ID
-        gcloud builds submit --tag gcr.io/$GCP_PROJECT_ID/$GCP_APPLICATION
+        gcloud config set project "$GCP_PROJECT_ID"
+        gcloud builds submit --tag gcr.io/"$GCP_PROJECT_ID"/"$GCP_APPLICATION"
         gcloud config set run/region europe-west4
       
     # Deploy the Docker image to the GKE cluster
@@ -40,7 +40,7 @@ jobs:
         GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
         GCP_APPLICATION: ${{ secrets.GCP_APPLICATION }}
       run: |
-        gcloud run deploy $GCP_APPLICATION --image gcr.io/$GCP_PROJECT_ID/$GCP_APPLICATION \
+        gcloud run deploy $GCP_APPLICATION --image gcr.io/"$GCP_PROJECT_ID"/"$GCP_APPLICATION" \
         --platform managed \
         --allow-unauthenticated \
         --memory 512M
