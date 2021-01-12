@@ -20,30 +20,20 @@ jobs:
     
     # Configure Docker with Credentials
     - name: Configure Docker
-      shell: bash
       run: |
         gcloud auth configure-docker
       
     # Build the Docker image
     - name: Build & Publish
-      shell: bash
-      env:
-        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-        GCP_APPLICATION: ${{ secrets.GCP_APPLICATION }}
       run: |
-        echo "GCP_PROJECT_ID=$GCP_PROJECT_ID"
-        gcloud config set project "$GCP_PROJECT_ID"
-        gcloud builds submit --tag gcr.io/"$GCP_PROJECT_ID"/"$GCP_APPLICATION"
+        gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+        gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APPLICATION }}
         gcloud config set run/region europe-west4
       
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
-      shell: bash
-      env:
-        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-        GCP_APPLICATION: ${{ secrets.GCP_APPLICATION }}
       run: |
-        gcloud run deploy $GCP_APPLICATION --image gcr.io/"$GCP_PROJECT_ID"/"$GCP_APPLICATION" \
+        gcloud run deploy $GCP_APPLICATION --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APPLICATION }} \
         --platform managed \
         --allow-unauthenticated \
         --memory 512M
